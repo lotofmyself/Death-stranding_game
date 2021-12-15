@@ -446,7 +446,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = player_image
         self.image.set_colorkey((255, 255, 255))
-        screen.blit(self.image, (0, 0))
         self.rect = self.image.get_rect().move(tile_width * pos_x + 15, tile_height * pos_y + 5)
         self.x = pos_x
         self.y = pos_y
