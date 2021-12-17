@@ -613,6 +613,7 @@ class Camera:
         :param target: Объект игрока."""
         self.dx = -(target.rect.x + target.rect.w // 2 - WIDTH // 2)
         self.dy = -(target.rect.y + target.rect.h // 2 - HEIGHT // 2)
+        print(self.dx, self.dy)
 
 
 if __name__ == "__main__":
