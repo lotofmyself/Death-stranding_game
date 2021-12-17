@@ -6,7 +6,6 @@ from pygame import mixer
 pygame.init()
 pygame.key.set_repeat(200, 70)
 
-# константы
 FPS = 500
 WIDTH = 600
 HEIGHT = 600
@@ -16,26 +15,30 @@ lvl_sch = 0
 fl_pos = False
 part_of_lvl = 0
 part_of_story = 0
+tile_width = tile_height = 50
 
 # сюжет и остальные текстовые константы
-texts = [["Цели:", "", "Найдите поставщика.", "", "Заберите посылку.", "", "Найдите портал."], ['Цели:', "", "Донесите посылку до базы (blue base).",
-                      "", "Найдите следуеющий портал."], ["Цель:", "Найдите следующего поставщика."],
+texts = [["Цели:", "", "Найдите поставщика.", "", "Заберите посылку.", "", "Найдите портал."],
+         ['Цели:', "", "Донесите посылку до базы (blue base).",
+          "", "Найдите следуеющий портал."], ["Цель:", "Найдите следующего поставщика."],
          ["Цель:", "", "Донести важную посылку."]]
 story = [["Адамант:", "", "О, а вот и ты. А я тут как раз думал о тебе.", "",
           "Сэм Бриджес:", "", "Мне некогда болтать. Где товар? Скоро начнется", "ливень смерти.", "",
           "Адамант:", "", "Ладно. Держи посылку. Отнеси её на blue base на северную сторону.", "",
           "Сэм Бриджес:", "", "Хорошо. Отметьте меня в списке. Я пошел.", "",
-          "Адамант:", "", "Стой! Будь аккуратен. Говорят 'BT' вышли из спячки на востоке и ", "перебрались на север.", "",
+          "Адамант:", "", "Стой! Будь аккуратен. Говорят 'BT' вышли из спячки на востоке и ", "перебрались на север.",
+          "",
           "Сэм Бриджес:", "", "Вот д****о. Спасибо за ифнормацию. Буду аккуратнее."],
          ["Сэм Бриджес:", "", "Почему место выдачи не определено в списках?", "",
-          "Грундаль:", "", "Тише! Это очень важная посылка.", "Судя по твоему рейтингу в блоке ты самый лучший доставщик.",
+          "Грундаль:", "", "Тише! Это очень важная посылка.",
+          "Судя по твоему рейтингу в блоке ты самый лучший доставщик.",
           "По этому я доверяю это тебе.", "Тебе нужно отнести её на blue base в запретную зону.", "",
           "Сэм Бриджес:", "", "Что такого в этой посылке?", "",
           "Грундаль:", "", "Я не могу говорить об этом. дело государственной важности важности."]]
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-# группы спрайтов всех обьектов в игре
 player = None
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
@@ -49,6 +52,11 @@ zombie_group = pygame.sprite.Group()
 
 # функции загрузки
 def load_image(name, color_key=None):
+    """Метод для загрузки изображений текстур, игрока, NPC
+    :param name: имя файла с изображением
+    :param color_key: переменная, отвечающая за значение прозрачности изображения
+    :return image: объект pygame.Surface с загруженным изображением
+    """
     fullname = os.path.join('data', name)
     try:
         image = pygame.image.load(fullname).convert()
@@ -66,6 +74,10 @@ def load_image(name, color_key=None):
 
 
 def load_level(filename):
+    """Метод конфертирующий текстовый файл уровня в массив строк
+    :param filename: переменная с именем текстового файла уровня
+    :return: массив строк уровня
+    """
     filename = "lvls/" + filename
     with open(filename, 'r') as mapFile:
         level_map = [line.strip() for line in mapFile]
@@ -74,6 +86,13 @@ def load_level(filename):
 
 
 def generate_level(level):
+    """Метод генерирующий уровень. Цикл проходит по всем значениям в строке и в соответсвии со значением заполняет опре
+    делённым изображением поле в игре
+    :param level: переменная, содержащая массив строк уровня
+    :return new_player: переменная, содержащая объект класса игрока
+    :return x: переменная содержащая координату по горизонтали
+    :return y:переменная содержащая координату по вертикали
+    """
     new_player, x, y = None, None, None
     fl = False
     for y in range(len(level)):
@@ -109,15 +128,22 @@ def generate_level(level):
 
 
 def terminate():
+    """Функция выхода из игры
+    :return: None
+    """
     pygame.quit()
     sys.exit()
 
 
-# основной цикл игры
 def game(lvl):
+    """Основной цикл игры, обновляющая объекты и события.
+    Цикл работает пока игра не закрыта. Также он считывает нажатия, обновляет классы камеры и игрока и отрисовывает все
+    элементы в игре. При выходе из игры активируется функция terminate().
+    :param lvl: переменная с именем текстового файла уровня
+    """
     player, level_x, level_y = generate_level(load_level(lvl))
     camera = Camera((level_x, level_y))
-
+    # цикл обрабатывающий событие и обновляющий объекты игры
     running = True
     while running:
         for event in pygame.event.get():
@@ -141,9 +167,11 @@ def game(lvl):
     terminate()
 
 
-# главная заставка
-
 def start_screen():
+    """Функция загрузки начального экрана.
+    Она подгружает изображение для экрана, отрисовывает текст и ждет события, чтобы переключить экран.
+    :return: None
+    """
     intro_text = ["Death stranding", "", "", "            18+"]
 
     fon = pygame.transform.scale(load_image('fon2.png'), (WIDTH, HEIGHT))
@@ -171,6 +199,10 @@ def start_screen():
 
 # инструкция
 def instruction_screen():
+    """Функция загрузки экрана с инструкцией управления игрой.
+    Она подгружает изображение для экрана, отрисовывает текст и ждет события, чтобы переключить экран.
+    :return: None
+    """
     intro_text = ["УПРАВЛЕНИЕ", "Стрелочки : движение героя.", "", "F : взаимодействие.", "",
                   "Зажмите левый SHIFT, чтобы ускориться.", "", "SPACE : начать игру заново на финальных экранах.", "",
                   "", "", "", "", "", "", "", "", "",
@@ -201,6 +233,11 @@ def instruction_screen():
 
 # интро уровней
 def first_screen():
+    """Функция загрузки экрана истории в начале игры.
+    Она подгружает изображение для экрана, отрисовывает текст и ждет события, чтобы переключить экран.
+    Также воспроизводится саундтрек игры.
+    :return: None
+    """
     intro_text = ["Однажды произошел взрыв, он породил пространство и время.",
                   "", "Однажды произошел взрыв и планета начала вращаться в пространстве.",
                   "", "Однажды произошел взрыв, он породил жизнь, какой мы её знаем.",
@@ -233,8 +270,13 @@ def first_screen():
 
 # экран при game over
 def final_screen():
+    """Функция загрузки экрана в случае проигрыша.
+    Она подгружает изображение для экрана, воспроизводит новый саундтрек и ждет события, чтобы переключить экран.
+    Также она обнуляет все объекты игры, переменные и запускает игровой цикл снова.
+    :return: None
+    """
     global lvl_sch, fl_pos, part_of_lvl, part_of_story
-    fon = pygame.transform.scale(load_image('game_over.jpg'), (WIDTH, HEIGHT))
+    fon = pygame.transform.scale(load_image("game_over.jpg"), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 40)
     mixer.music.load("music\{}.mp3".format('game_over'))
@@ -270,6 +312,11 @@ def final_screen():
 
 # конечный экран
 def over_screen():
+    """Функция загрузки экрана в случае прохождения игры до конца.
+    Она подгружает изображение для экрана, отрисовывает текст, воспроизводит новый саундтрек и ждет события, чтобы
+    переключить экран. Также она обнуляет все объекты игры, переменные и запускает игровой цикл снова.
+    :return: None
+    """
     global lvl_sch, fl_pos, part_of_lvl, part_of_story
     fon = pygame.transform.scale(load_image('over.jpg'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
@@ -315,6 +362,10 @@ def over_screen():
 
 
 def second_screen():
+    """Функция загрузки экрана задания для игрока.
+    Она подгружает изображение для экрана, отрисовывает текст и ждет события, чтобы переключить экран.
+    :return: None
+    """
     global part_of_lvl
     intro_text = texts[part_of_lvl]
     part_of_lvl += 1
@@ -344,6 +395,10 @@ def second_screen():
 
 # экран диалогов
 def story_screen():
+    """Функция загрузки экрана диалога с персонажами.
+    Она подгружает изображение для экрана, отрисовывает текст и ждет события, чтобы переключить экран.
+    :return: None
+    """
     global part_of_story
     intro_text = story[part_of_story]
     part_of_story += 1
@@ -371,22 +426,23 @@ def story_screen():
         clock.tick(FPS)
 
 
-# константы изображений всех объектов
+# Словарь текстур с загруженными изображениями
 tile_images = {'wall': load_image('empty4.png'), 'empty': load_image('empty.png'),
                'snow': load_image('snow.png'), 'spawn': load_image('spawn.png'),
                'actor': load_image('actor2.png', color_key=-1),
                'portal': load_image('spawn.png'), 'base': load_image('base.jpg'),
                'empty2': load_image('empty2.png'), 'black': load_image('black.jfif'),
                'zombie': load_image('zombie.png', color_key=-1)}
+
+# Загрузка изображения игрока
 player_image = load_image('gamer.png', color_key=-1)
 player_image = pygame.transform.scale(player_image, (40, 40))
 
-tile_width = tile_height = 50
 
-
-# классы карты
-
+# Класс карты
 class Tile(pygame.sprite.Sprite):
+    """Класс преобразующий массив уровня в поле игры
+    :param pygame.sprite.Sprite: объект типа Sprite"""
     def __init__(self, tile_type, pos_x, pos_y):
         if tile_type == 'wall':
             super().__init__(tiles_group, all_sprites)
@@ -410,8 +466,10 @@ class Tile(pygame.sprite.Sprite):
             self.rect = self.image.get_rect().move(tile_width * pos_x, tile_height * pos_y)
 
 
-# класс персонажей
+# Класс NPC
 class Actor(pygame.sprite.Sprite):
+    """Класс преобразующий элементы карты в объект NPC с которым можно взаимодействовать.
+    :param pygame.sprite.Sprite: объект типа Sprite"""
     def __init__(self, actor_type, pos_x, pos_y):
         super().__init__(actors_group, all_sprites)
         self.image = tile_images[actor_type]
@@ -423,8 +481,10 @@ class Actor(pygame.sprite.Sprite):
         self.y = pos_y
 
 
-# класс врагов
+# Класс врагов
 class Zombie(pygame.sprite.Sprite):
+    """Класс преобразующий элементы карты в объект NPC с которым можно взаимодействовать.
+    :param pygame.sprite.Sprite: объект типа Sprite"""
     def __init__(self, zombie_type, pos_x, pos_y):
         super().__init__(zombie_group, all_sprites)
         self.image = tile_images[zombie_type]
@@ -436,8 +496,10 @@ class Zombie(pygame.sprite.Sprite):
         self.y = pos_y
 
 
-# класс игрока
+# Класс игрока
 class Player(pygame.sprite.Sprite):
+    """Класс преобразующий элемент карты в объект игрока, обновляющий его местоположение на игровом поле.
+    :param pygame.sprite.Sprite: объект типа Sprite"""
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         if fl_pos:
@@ -452,6 +514,10 @@ class Player(pygame.sprite.Sprite):
 
     # апдейт для всех взаимодействий с окружающим миром игрока
     def update(self, event, player):
+        """Метод, который изменяет координаты игрока при событии. При взаимодействии с окружением производятся разные
+        действия.
+        :param event: Событие.
+        :param player: Объект игрока."""
         global lvl_sch, STEP, fl_pos
         x = player.rect.x
         y = player.rect.y
@@ -472,13 +538,12 @@ class Player(pygame.sprite.Sprite):
             STEP = 18
         else:
             STEP = 10
-        if pygame.sprite.spritecollideany(self, tiles_group):
+        if pygame.sprite.spritecollideany(self, tiles_group): # При столкновении с текстурами игры координаты игрока не изменяются.
             player.rect.x = x
             player.rect.y = y
-        if pygame.sprite.spritecollideany(self, portals_group):
+        if pygame.sprite.spritecollideany(self, portals_group): # При столкновении с текстурами портала координаты игрока не изменяются,
             if event.key == pygame.K_f:
-                print(lvl_sch)
-                if lvl_sch == 3:
+                if lvl_sch == 3: # Конец игры.
                     over_screen()
                 else:
                     second_screen()
@@ -492,15 +557,15 @@ class Player(pygame.sprite.Sprite):
                     zombie_group.empty()
                     lvl_sch += 1
                     game(lvls[lvl_sch])
-        if pygame.sprite.spritecollideany(self, actors_group):
-            if event.key == pygame.K_f and fl_pos == False:
+        if pygame.sprite.spritecollideany(self, actors_group): # Изменение текстуры игрока
+            if event.key == pygame.K_f and fl_pos != True:
                 story_screen()
                 self.image = load_image('gamer_with.png', color_key=-1)
                 self.image = pygame.transform.scale(self.image, (40, 40))
                 self.image.set_colorkey((255, 255, 255))
                 screen.blit(self.image, (0, 0))
                 fl_pos = True
-        if pygame.sprite.spritecollideany(self, base_group):
+        if pygame.sprite.spritecollideany(self, base_group): # Изменение текстуры игрока.
             player.rect.x = x
             player.rect.y = y
             self.image = load_image('gamer.png', color_key=-1)
@@ -508,7 +573,7 @@ class Player(pygame.sprite.Sprite):
             self.image.set_colorkey((255, 255, 255))
             screen.blit(self.image, (0, 0))
             fl_pos = False
-        if pygame.sprite.spritecollideany(self, zombie_group):
+        if pygame.sprite.spritecollideany(self, zombie_group): # Проигрыш. Обнуление спрайтов, загрузка экрана проигрыща.
             final_screen()
             all_sprites.empty()
             tiles_group.empty()
@@ -522,12 +587,16 @@ class Player(pygame.sprite.Sprite):
 
 # класс камеры
 class Camera:
+    """Класс изменяющий вид игрока на игровое поле при движении персонажа.
+    """
     def __init__(self, field_size):
         self.dx = 0
         self.dy = 0
         self.field_size = field_size
 
     def apply(self, obj):
+        """Метод, который изменяет координаты объектов игры.
+        :param obj: Объект типа Sprite."""
         obj.rect.x += self.dx
         if obj.rect.x < -obj.rect.width:
             obj.rect.x += (self.field_size[0] + 1) * obj.rect.width
@@ -540,8 +609,11 @@ class Camera:
             obj.rect.y += -obj.rect.height * (1 + self.field_size[1])
 
     def update(self, target):
+        """Метод, который изменяет координаты объектов игры.
+        :param target: Объект игрока."""
         self.dx = -(target.rect.x + target.rect.w // 2 - WIDTH // 2)
         self.dy = -(target.rect.y + target.rect.h // 2 - HEIGHT // 2)
+
 
 if __name__ == "__main__":
     # Начальная ИГРОВАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ
@@ -550,4 +622,3 @@ if __name__ == "__main__":
     first_screen()
     second_screen()
     game(lvls[lvl_sch])
-
