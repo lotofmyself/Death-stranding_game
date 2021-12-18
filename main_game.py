@@ -442,7 +442,9 @@ player_image = pygame.transform.scale(player_image, (40, 40))
 # Класс карты
 class Tile(pygame.sprite.Sprite):
     """Класс преобразующий массив уровня в поле игры
-    :param pygame.sprite.Sprite: объект типа Sprite"""
+    :param pygame.sprite.Sprite: объект типа Sprite
+    :param self.image: переменная изображения объекта.
+    :param self.rect: переменная размера изображения."""
     def __init__(self, tile_type, pos_x, pos_y):
         if tile_type == 'wall':
             super().__init__(tiles_group, all_sprites)
@@ -469,7 +471,11 @@ class Tile(pygame.sprite.Sprite):
 # Класс NPC
 class Actor(pygame.sprite.Sprite):
     """Класс преобразующий элементы карты в объект NPC с которым можно взаимодействовать.
-    :param pygame.sprite.Sprite: объект типа Sprite"""
+    :param pygame.sprite.Sprite: объект типа Sprite
+    :param self.image: переменная изображения объекта NPC.
+    :param self.rect: переменная размера изображения.
+    :param self.x: переменная координаты по горизонтали.
+    :param self.y: переменная координаты по вертикали."""
     def __init__(self, actor_type, pos_x, pos_y):
         super().__init__(actors_group, all_sprites)
         self.image = tile_images[actor_type]
@@ -484,7 +490,11 @@ class Actor(pygame.sprite.Sprite):
 # Класс врагов
 class Zombie(pygame.sprite.Sprite):
     """Класс преобразующий элементы карты в объект NPC с которым можно взаимодействовать.
-    :param pygame.sprite.Sprite: объект типа Sprite"""
+    :param pygame.sprite.Sprite: объект типа Sprite
+    :param self.image: переменная изображения объекта NPC.
+    :param self.rect: переменная размера изображения.
+    :param self.x: переменная координаты по горизонтали.
+    :param self.y: переменная координаты по вертикали."""
     def __init__(self, zombie_type, pos_x, pos_y):
         super().__init__(zombie_group, all_sprites)
         self.image = tile_images[zombie_type]
@@ -499,7 +509,12 @@ class Zombie(pygame.sprite.Sprite):
 # Класс игрока
 class Player(pygame.sprite.Sprite):
     """Класс преобразующий элемент карты в объект игрока, обновляющий его местоположение на игровом поле.
-    :param pygame.sprite.Sprite: объект типа Sprite"""
+    :param pygame.sprite.Sprite: объект типа Sprite
+    :param self.image: переменная изображения объекта персонажа.
+    :param self.rect: переменная размера изображения.
+    :param self.x: переменная координаты по горизонтали.
+    :param self.y: переменная координаты по вертикали.
+    """
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         if fl_pos:
@@ -516,8 +531,9 @@ class Player(pygame.sprite.Sprite):
     def update(self, event, player):
         """Метод, который изменяет координаты игрока при событии. При взаимодействии с окружением производятся разные
         действия.
-        :param event: Событие.
-        :param player: Объект игрока."""
+        :param event: Переменная типа Событие.
+        :param player: Объект игрока, содержащий размеры изображения игрока.
+        """
         global lvl_sch, STEP, fl_pos
         x = player.rect.x
         y = player.rect.y
@@ -573,7 +589,7 @@ class Player(pygame.sprite.Sprite):
             self.image.set_colorkey((255, 255, 255))
             screen.blit(self.image, (0, 0))
             fl_pos = False
-        if pygame.sprite.spritecollideany(self, zombie_group): # Проигрыш. Обнуление спрайтов, загрузка экрана проигрыща.
+        if pygame.sprite.spritecollideany(self, zombie_group): # Проигрыш. Обнуление спрайтов, загрузка экрана проигрыша.
             final_screen()
             all_sprites.empty()
             tiles_group.empty()
@@ -588,6 +604,11 @@ class Player(pygame.sprite.Sprite):
 # класс камеры
 class Camera:
     """Класс изменяющий вид игрока на игровое поле при движении персонажа.
+    :param self.field_size: переменная размера видимого игрового поля.
+    :param self.rect: переменная размера изображения.
+    :param self.dx: переменная координаты по горизонтали.
+    :param self.dy: переменная координаты по вертикали.
+    :param obj: Объект типа Sprite.
     """
     def __init__(self, field_size):
         self.dx = 0
@@ -610,7 +631,7 @@ class Camera:
 
     def update(self, target):
         """Метод, который изменяет координаты объектов игры.
-        :param target: Объект игрока."""
+        :param target: Объект игрока, содержащий его размеры."""
         self.dx = -(target.rect.x + target.rect.w // 2 - WIDTH // 2)
         self.dy = -(target.rect.y + target.rect.h // 2 - HEIGHT // 2)
 
