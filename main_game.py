@@ -247,7 +247,7 @@ def first_screen():
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 20)
     text_coord = 50
-    mixer.music.load("music\{}.mp3".format('death_stranding_08. John'))
+    mixer.music.load("music/{}.mp3".format('death_stranding_08. John'))
     mixer.music.play()
     for line in intro_text:
         string_rendered = font.render(line, 50, (189, 182, 191))
@@ -279,7 +279,7 @@ def final_screen():
     fon = pygame.transform.scale(load_image("game_over.jpg"), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 40)
-    mixer.music.load("music\{}.mp3".format('game_over'))
+    mixer.music.load("music/{}.mp3".format('game_over'))
     mixer.music.play()
     while True:
         for event in pygame.event.get():
@@ -321,7 +321,7 @@ def over_screen():
     fon = pygame.transform.scale(load_image('over.jpg'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 60)
-    mixer.music.load("music\{}.mp3".format('death_stranding_10. Heartman'))
+    mixer.music.load("music/{}.mp3".format('death_stranding_10. Heartman'))
     mixer.music.play()
     intro_text = ["Thanks for playing.", "", "Game by lotofmyself"]
     text_coord = 100
@@ -613,7 +613,6 @@ class Camera:
         :param target: Объект игрока."""
         self.dx = -(target.rect.x + target.rect.w // 2 - WIDTH // 2)
         self.dy = -(target.rect.y + target.rect.h // 2 - HEIGHT // 2)
-        print(self.dx, self.dy)
 
 
 if __name__ == "__main__":
